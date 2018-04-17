@@ -18,26 +18,33 @@ var sessionName = '';
 
 // Setup environment
 function setupEnvironment() {
-    var outputFolder = path.join(__dirname, './_output');
+    var outputFolder = path.join(process.cwd(), './_output');
+    log.info('Checking existence of output folder ' + outputFolder);
     if (!fs.existsSync(outputFolder)) {
+        log.info('Creating output directory.');
         fs.mkdirSync(outputFolder);
     }
 
-    var logsFolder = path.join(__dirname, './_output/logs');
+    var logsFolder = path.join(process.cwd(), './_output/logs');
+    log.info('Checking existence of logs folder ' + logsFolder);
     if (!fs.existsSync(logsFolder)) {
+        log.info('Creating logs directory.');
         fs.mkdirSync(logsFolder);
     }
 
-    var reportsFolder = path.join(__dirname, './_output/reports');
+    var reportsFolder = path.join(process.cwd(), './_output/reports');
+    log.info('Checking existence of reports folder ' + reportsFolder);
     if (!fs.existsSync(reportsFolder)) {
+        log.info('Creating reports directory.');
         fs.mkdirSync(reportsFolder);
     }
 
-    var jsonReport = path.join(__dirname, './_output/reports/_cucumber-report.json');
+    var jsonReport = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
+    log.info('Checking existence of Cucumber report file ' + jsonReport);
     if (fs.existsSync(jsonReport)) {
+        log.info('Creating Cucumber report file.');
         fs.unlinkSync(jsonReport);
     }
-
 }
 
 function setupCapabilities(caps, config, options) {
@@ -130,10 +137,10 @@ function cucumberXmlReport(opts) {
 
 // Create HTML report
 function createHtmlReport() {
-    var input = path.join(__dirname, './_output/reports/_cucumber-report.json');
+    var input = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
 
     if (fs.existsSync(input)) {
-        var output = path.join(__dirname, './_output/reports/' + sessionName.replace(/ /g, '_') + '_report.html');
+        var output = path.join(process.cwd(), './_output/reports/' + sessionName.replace(/ /g, '_') + '_report.html');
         var outputJs = output.replace('html', 'json');
 
         var options = {
@@ -182,41 +189,45 @@ function createHtmlReport() {
     }
 }
 
-var options = {};
-if (args.options) {
-    options = require(path.join(process.cwd(), args.options)).config;
+if(process.argv[2] == 'setup') {
+    log.info('Running setup!');
+    // Setup environment
+    setupEnvironment();
 }
-else {
-    log.error('No options file was given!');
-    process.exit(1);
+else if(process.argv[2] == 'run') {
+    var options = {};
+    if (args.options) {
+        options = require(path.join(process.cwd(), args.options)).config;
+    }
+    else {
+        log.error('No options file was given!');
+        process.exit(1);
+    }
+
+    // Read default config file
+    var config = require(configFile).config;
+    // Override default config with given config
+    if (args.config) {
+        var overrideconfig = require(path.join(process.cwd(), args.config)).config;
+        config = Object.assign(config, overrideconfig);
+    }
+
+    // Run tests 
+    log.info('Running for site: ' + colors.bold(colors.white(colors.bgblue(options.baseUrl))));
+
+    // Start test run
+    var wdio = new launcher(path.join(__dirname, configFile), options);
+
+    // Setup capabilities
+    var caps = wdio.configParser._capabilities[0];
+    setupCapabilities(caps, config, options);
+
+    // Start test
+    wdio.run().then(function (code) {
+        // Create HTML report
+        //createHtmlReport();
+    }, function (error) {
+        log.error('Error while running the tests!');
+        log.error(error);
+    });
 }
-
-// Read default config file
-var config = require(configFile).config;
-// Override default config with given config
-if (args.config) {
-    var overrideconfig = require(path.join(process.cwd(), args.config)).config;
-    config = Object.assign(config, overrideconfig);
-}
-
-// Setup environment
-setupEnvironment();
-
-// Run tests 
-log.info('Running for site: ' + colors.bold(colors.white(colors.bgblue(options.baseUrl))));
-
-// Start test run
-var wdio = new launcher(path.join(__dirname, configFile), options);
-
-// Setup capabilities
-var caps = wdio.configParser._capabilities[0];
-setupCapabilities(caps, config, options);
-
-// Start test
-wdio.run().then(function (code) {
-    // Create HTML report
-    //createHtmlReport();
-}, function (error) {
-    log.error('Error while running the tests!');
-    log.error(error);
-});
