@@ -41,7 +41,7 @@
     "yargs": "^11.0.0"
   },
   "bin": {
-    "vmt": "./cli.js"
+    "vtf": "./cli.js"
   },
   "keywords": [
     "testing",
