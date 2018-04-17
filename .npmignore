@@ -63,4 +63,5 @@ typings/
 # Custom gitignore items
 _output
 .vscode
+test
 dist
