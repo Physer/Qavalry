@@ -40,18 +40,18 @@ More about the WebdriverIO configuration can be found [here.](http://webdriver.i
 #### baseUrl
 Base URL used for the tests being started.
 
-Type: `String`
-Default: `null`
+Type: `String`<br>
+Default: `null`<br>
 Example: `https://github.com/`
 #### specs
 A list of path queries of the Cucumber tests which should be run.
 
-Type: `String[]`
-Default: `[]`
+Type: `String[]`<br>
+Default: `[]`<br>
 Example: `['./features/**/*.feature']`
 #### logOutput
 A list of path queries of the Cucumber tests which should be run.
 
-Type: `String[]`
-Default: `[]`
+Type: `String[]`<br>
+Default: `[]`<br>
 Example: `['./features/**/*.feature']`
