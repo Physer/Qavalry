@@ -10,15 +10,15 @@ npm install valtech-testing-framework --save-dev
 ## Usage
 Using a commandline tool you first need to setup the required output folders. You can simply do this by running the following command:
 ```bash
-vft setup
+vtf setup
 ```
 After the setup is completed you can run VTF using the command below. 
 ```bash
-vft run --options options.js [--config config.js]
+vtf run --options options.js [--config config.js]
 ```
 
 ## Configuration
-When running the vft run command it is mandatory to specify an options file. The following code shows an example of what your options.js could look like:
+When running the vtf run command it is mandatory to specify an options file. The following code shows an example of what your options.js could look like:
 ```js
 // options.js
 module.exports.config = {
