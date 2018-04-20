@@ -23,7 +23,10 @@ When running the vtf run command it is mandatory to specify an options file. The
 // options.js
 module.exports.config = {
     baseUrl: 'https://github.com',
-    specs: ['./features/**/*.feature']
+    specs: ['./features/**/*.feature'],
+    cucumberOpts: {
+        tagExpression: '@tag1'
+    }
 }
 ```
 Optionally you can also specify an config file, which will be used to override the default config file from WebdriverIO. The following code shows an example of what the config.js would look like if you wanted to run the tests in Firefox:
