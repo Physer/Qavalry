@@ -1,6 +1,6 @@
 {
   "name": "valtech-testing-framework",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Framework for automated testing using Cucumber, WebdriverIO and Selenium",
   "main": "index.js",
   "scripts": {
