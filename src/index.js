@@ -7,6 +7,7 @@ import async from 'async';
 import allure from 'allure-commandline';
 import cucumberJunit from 'cucumber-junit';
 import colors from 'ansi-colors';
+import reporter from 'cucumber-html-reporter';
 
 const launcher = require('webdriverio/build/lib/launcher');
 const args = require('yargs').argv;
@@ -140,7 +141,7 @@ function createHtmlReport() {
     var input = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
 
     if (fs.existsSync(input)) {
-        var output = path.join(process.cwd(), './_output/reports/' + sessionName.replace(/ /g, '_') + '_report.html');
+        var output = path.join(process.cwd(), './_output/reports/' + 'html_report.html');
         var outputJs = output.replace('html', 'json');
 
         var options = {
@@ -168,9 +169,9 @@ function createHtmlReport() {
                 cb(null, 2);
             },
             function (cb) {
-                // gulp.src(outputJs)
-                //     .pipe(cucumberXmlReport({ strict: true }))
-                //     .pipe(gulp.dest('_output/reports'));
+                 gulp.src(outputJs)
+                     .pipe(cucumberXmlReport({ strict: true }))
+                     .pipe(gulp.dest('_output/reports'));
                 cb(null, 3);
             }
             /*
@@ -225,7 +226,7 @@ else if(process.argv[2] == 'run') {
     // Start test
     wdio.run().then(function (code) {
         // Create HTML report
-        //createHtmlReport();
+        createHtmlReport();
     }, function (error) {
         log.error('Error while running the tests!');
         log.error(error);
