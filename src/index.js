@@ -35,7 +35,7 @@ function setupEnvironment() {
     var jsonReport = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
     log.info('Checking existence of Cucumber report file ' + jsonReport);
     if (fs.existsSync(jsonReport)) {
-        log.info('Creating Cucumber report file.');
+        log.info('Cleaning Cucumber report files');
         fs.unlinkSync(jsonReport);
     }
 }
@@ -52,14 +52,7 @@ function createHtmlReport() {
             jsonFile: input,
             output: output,
             reportSuiteAsScenarios: false,
-            launchReport: false,
-            metadata: {
-                "App Version": "1.0.0",
-                "Test Environment": "PROD",
-                "Browser": "TODO  1.0.0",
-                "Platform": "TODO",
-                "Executed": "Remote"
-            }
+            launchReport: false
         };
 
         reporter.generate(options);
@@ -70,7 +63,9 @@ if (process.argv[2] == 'setup') {
     log.info('Running setup!');
     setupEnvironment();
 } else if (process.argv[2] == 'run') {
+    // Make sure the environment is set up properly before running any tests
     setupEnvironment();
+
     var options = {};
     if (args.options) {
         options = require(path.join(process.cwd(), args.options)).config;
@@ -94,7 +89,7 @@ if (process.argv[2] == 'setup') {
     var wdio = new launcher(path.join(__dirname, configFile), options);
 
     // Start test
-    wdio.run().then(function (code) {
+    wdio.run().then(() => {
         createHtmlReport();
     }, function (error) {
         log.error('Error while running the tests!');

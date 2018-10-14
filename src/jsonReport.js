@@ -11,7 +11,6 @@ defineSupportCode(({
     After,
     registerListener
 }) => {
-    console.log('Starting JSON report generation');
     const jsonFormatter = new JsonFormatter();
 
     jsonFormatter.log = function (resultString) {
