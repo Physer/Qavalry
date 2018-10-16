@@ -5,6 +5,7 @@ import fs from 'fs';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import reporter from 'cucumber-html-reporter';
+import dateformat from 'dateformat';
 
 const launcher = require('webdriverio/build/lib/launcher');
 const args = require('yargs').argv;
@@ -52,8 +53,8 @@ function createHtmlReport() {
     var input = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
 
     if (fs.existsSync(input)) {
-        //var currentDate = new Date().toISOString();
-        var output = path.join(process.cwd(), `./_output/reports/html/html_report.html`);
+        var currentDate = dateformat(new Date(), "dd-mm-yyyy_HHMMss");
+        var output = path.join(process.cwd(), `./_output/reports/html/${currentDate}_html_report.html`);
 
         var options = {
             theme: 'bootstrap',
