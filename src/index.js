@@ -32,6 +32,13 @@ function setupEnvironment() {
         fs.mkdirSync(reportsFolder);
     }
 
+    var htmlReportsFolder = path.join(process.cwd(), './_output/reports/html');
+    log.info('Checking existence of html reports folder ' + htmlReportsFolder);
+    if (!fs.existsSync(htmlReportsFolder)) {
+        log.info('Creating html reports directory.');
+        fs.mkdirSync(htmlReportsFolder);
+    }
+
     var jsonReport = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
     log.info('Checking existence of Cucumber report file ' + jsonReport);
     if (fs.existsSync(jsonReport)) {
@@ -45,7 +52,8 @@ function createHtmlReport() {
     var input = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
 
     if (fs.existsSync(input)) {
-        var output = path.join(process.cwd(), './_output/reports/' + 'html_report.html');
+        //var currentDate = new Date().toISOString();
+        var output = path.join(process.cwd(), `./_output/reports/html/html_report.html`);
 
         var options = {
             theme: 'bootstrap',
