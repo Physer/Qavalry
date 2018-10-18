@@ -3,20 +3,14 @@
 import path from 'path';
 import fs from 'fs';
 import log from 'fancy-log';
-import async from 'async';
-import allure from 'allure-commandline';
-import cucumberJunit from 'cucumber-junit';
 import colors from 'ansi-colors';
+import reporter from 'cucumber-html-reporter';
+import dateformat from 'dateformat';
 
 const launcher = require('webdriverio/build/lib/launcher');
 const args = require('yargs').argv;
-
 var configFile = './wdio.defaults.conf.js';
-var tags;
 
-var sessionName = '';
-
-// Setup environment
 function setupEnvironment() {
     var outputFolder = path.join(process.cwd(), './_output');
     log.info('Checking existence of output folder ' + outputFolder);
@@ -39,100 +33,19 @@ function setupEnvironment() {
         fs.mkdirSync(reportsFolder);
     }
 
+    var htmlReportsFolder = path.join(process.cwd(), './_output/reports/html');
+    log.info('Checking existence of html reports folder ' + htmlReportsFolder);
+    if (!fs.existsSync(htmlReportsFolder)) {
+        log.info('Creating html reports directory.');
+        fs.mkdirSync(htmlReportsFolder);
+    }
+
     var jsonReport = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
     log.info('Checking existence of Cucumber report file ' + jsonReport);
     if (fs.existsSync(jsonReport)) {
-        log.info('Creating Cucumber report file.');
+        log.info('Cleaning Cucumber report files');
         fs.unlinkSync(jsonReport);
     }
-}
-
-function setupCapabilities(caps, config, options) {
-    var hostname = options.baseUrl;
-    var hostnameWithProtocol = hostname;
-    if (!hostname.includes('http')) {
-        hostnameWithProtocol = 'http://' + hostnameWithProtocol;
-    }
-
-    // Setup Browserstack options
-    if (config.host) {
-        if (config.host == 'hub.browserstack.com') {
-            if (build) {
-                caps.build = build;
-            }
-
-            if (project) {
-                caps.project = project;
-            }
-            else {
-                var name = project + ' v' + build + ' ' + hostname;
-                if (os) {
-                    name = name + ' on ' + os + ' ' + os_version;
-                    name = name + ' and ' + browser + ' ' + browser_version;
-                }
-                caps.project = name;
-                //project = name;
-                sessionName = name;
-            }
-
-        }
-    }
-
-    // Setup for SauceLabs
-    if (config.host) {
-        if (config.host == 'ondemand.saucelabs.com') {
-            if (build) {
-                caps.build = build;
-            }
-
-            if (project) {
-                caps.name = project;
-            }
-            else {
-                var name = hostname + ' on ' + caps.platform + ' and ' + caps.browserName;
-                caps.name = name;
-                //project = name;
-                sessionName = name;
-            }
-        }
-    }
-
-    // Setup for Test Object
-    if (config.host) {
-        if (config.host == 'app.testobject.com') {
-            var testName = test;
-
-            if (!test) {
-                testName = hostname + ' on ' + config.capabilities[0].testobject_device;
-            }
-
-            if (suite) {
-                caps.testobject_suite_name = suite;
-            } else {
-                caps.testobject_suite_name = config.capabilities[0].testobject_suite_name;
-            }
-
-            caps.testobject_test_name = testName;
-            //project = testName;
-            sessionName = testName;
-        }
-    }
-
-    // Setup localhost
-    if (!config.host || config.host == '127.0.0.1' || config.host == 'localhost') {
-        sessionName = hostname + ' on localhost';
-    }
-}
-
-// Create JUnit XML report
-function cucumberXmlReport(opts) {
-    return through.obj(function (file, enc, cb) {
-        var xml = cucumberJunit(file.contents, opts);
-        file.contents = new Buffer(xml);
-        file.path = gutil.replaceExtension(file.path, '.xml');
-
-        cb(null, file);
-    });
 }
 
 // Create HTML report
@@ -140,66 +53,32 @@ function createHtmlReport() {
     var input = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
 
     if (fs.existsSync(input)) {
-        var output = path.join(process.cwd(), './_output/reports/' + sessionName.replace(/ /g, '_') + '_report.html');
-        var outputJs = output.replace('html', 'json');
+        var currentDate = dateformat(new Date(), "dd-mm-yyyy_HHMMss");
+        var output = path.join(process.cwd(), `./_output/reports/html/${currentDate}_html_report.html`);
 
         var options = {
             theme: 'bootstrap',
             jsonFile: input,
             output: output,
             reportSuiteAsScenarios: false,
-            launchReport: false,
-            metadata: {
-                "App Version": "1.0.0",
-                "Test Environment": "PROD",
-                "Browser": "TODO  1.0.0",
-                "Platform": "TODO",
-                "Executed": "Remote"
-            }
+            launchReport: false
         };
 
-        async.series([
-            function (cb) {
-                reporter.generate(options);
-                cb(null, 1);
-            },
-            function (cb) {
-                fs.renameSync(input, outputJs)
-                cb(null, 2);
-            },
-            function (cb) {
-                // gulp.src(outputJs)
-                //     .pipe(cucumberXmlReport({ strict: true }))
-                //     .pipe(gulp.dest('_output/reports'));
-                cb(null, 3);
-            }
-            /*
-            ,
-            function(cb) {
-              var generation = allure(['generate', '_output/reports'])
-              generation.on('exit', function(exitCode) {
-                  console.log('Generation is finished with code:', exitCode);
-              });
-              cb(null, 4);
-            }
-            */
-        ], function (error, results) {
-            //console.log(results);
-        });
+        reporter.generate(options);
     }
 }
 
-if(process.argv[2] == 'setup') {
+if (process.argv[2] == 'setup') {
     log.info('Running setup!');
-    // Setup environment
     setupEnvironment();
-}
-else if(process.argv[2] == 'run') {
+} else if (process.argv[2] == 'run') {
+    // Make sure the environment is set up properly before running any tests
+    setupEnvironment();
+
     var options = {};
     if (args.options) {
         options = require(path.join(process.cwd(), args.options)).config;
-    }
-    else {
+    } else {
         log.error('No options file was given!');
         process.exit(1);
     }
@@ -218,14 +97,9 @@ else if(process.argv[2] == 'run') {
     // Start test run
     var wdio = new launcher(path.join(__dirname, configFile), options);
 
-    // Setup capabilities
-    var caps = wdio.configParser._capabilities[0];
-    setupCapabilities(caps, config, options);
-
     // Start test
-    wdio.run().then(function (code) {
-        // Create HTML report
-        //createHtmlReport();
+    wdio.run().then(() => {
+        createHtmlReport();
     }, function (error) {
         log.error('Error while running the tests!');
         log.error(error);
