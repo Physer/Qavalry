@@ -50,7 +50,8 @@ function prepareOutputFolders() {
     }
 }
 
-function init() {
+function setup() {
+    log.info('Running setup!');
     var destination = process.cwd();
     fsextra.copy(path.join(__dirname, '../boilerplate'), `${destination}`, err => {
         if(err) {
@@ -58,7 +59,6 @@ function init() {
             console.log(err);
         }
     });
-    console.log('Copied boilerplate');
 }
 
 // Create HTML report
@@ -81,9 +81,8 @@ function createHtmlReport() {
     }
 }
 
-if (process.argv[2] == 'setup') {
-    log.info('Running setup!');
-    init();
+if (process.argv[2] == 'setup') {    
+    setup();
 } else if (process.argv[2] == 'run') {
     // Make sure the environment is set up properly before running any tests
     prepareOutputFolders();
@@ -115,6 +114,7 @@ if (process.argv[2] == 'setup') {
 
     // Start test
     wdio.run().then(() => {
+        log.info('Creating html report');
         createHtmlReport();
     }, function (error) {
         log.error('Error while running the tests!');
