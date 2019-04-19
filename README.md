@@ -1,8 +1,8 @@
-# Valtech Testing Framework
-Valtech Testing Framework (VTF) is a framework combining Cucumber(.js), WebdriverIO and Selenium for setting up a quick and easy testing environment.
+# Qavalry
+Qavalry (Qavalry) is a framework combining Cucumber(.js), WebdriverIO and Selenium for setting up a quick and easy testing environment.
 
 ## Installation
-You can install VTF using NPM:
+You can install Qavalry using NPM:
 ```bash
 npm install valtech-testing-framework --save-dev
 ```
@@ -12,7 +12,7 @@ Using a commandline tool you first need to setup the required output folders. Yo
 ```bash
 vtf setup
 ```
-After the setup is completed you can run VTF using the command below. 
+After the setup is completed you can run Qavalry using the command below. 
 ```bash
 vtf run --options options.js [--config config.js]
 ```
