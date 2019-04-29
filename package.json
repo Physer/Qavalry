@@ -15,10 +15,13 @@
   "author": "Alex Schouls",
   "contributors": [
     {
+      "name": "Bob Sanders"
+    },
+    {
       "name": "Guido van Tricht"
     }
   ],
-  "repository": "github:Physer/Valtech-Testing-Framework",
+  "repository": "github:Physer/Qavalry",
   "license": "MIT",
   "dependencies": {
     "allure-commandline": "^2.5.0",
@@ -42,6 +45,7 @@
     "yargs": "^11.0.0"
   },
   "bin": {
+    "qavalry": "./cli.js",
     "vtf": "./cli.js"
   },
   "keywords": [
