@@ -4,20 +4,24 @@ Qavalry (Qavalry) is a framework combining Cucumber(.js), WebdriverIO and Seleni
 ## Installation
 You can install Qavalry using NPM:
 ```bash
-npm install valtech-testing-framework
+npm install qavalry
 ```
 Using a commandline tool you first need to setup the required output folders. You can simply do this by running the following command:
 ```bash
-npx vtf setup
+npx qavalry setup
 ```
 After the setup is completed you can run Qavalry using the command below. 
 ```bash
-npx vtf run [--options options.js] [--config config.js]
+npx qavalry run [--options options.js] [--config config.js]
 ```
 
+## Publish changes
+
+1. Create a new tag with `npm version x.x.x-beta.x`
+2. Publish with `npm publish --tag beta` 
 
 ## Configuration
-When running the vtf run command it is mandatory to specify an options file. The following code shows an example of what your options.js could look like:
+When running the qavalry run command it is mandatory to specify an options file. The following code shows an example of what your options.js could look like:
 ```js
 // options.js
 module.exports.config = {
@@ -70,11 +74,11 @@ npm link
 `This flow is still not optimal.`
 Go to an empty folder and run the following commands:
 ```bash
-npx vtf setup
+npx qavalry setup
 npm install semver
 npm install babel-preset-env
 ```
-Lastly, copy the `\dist\jsonReport.js` file to  `<empty folder>\node_modules\valtech-testing-framework\dist\jsonReport.js`
+Lastly, copy the `\dist\jsonReport.js` file to  `<empty folder>\node_modules\qavalry\dist\jsonReport.js`
 
 ## Publish
 
