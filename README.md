@@ -78,7 +78,7 @@ npx qavalry setup
 npm install semver
 npm install babel-preset-env
 ```
-Lastly, copy the `\dist\jsonReport.js` file to  `<empty folder>\node_modules\qavalry\dist\jsonReport.js`
+Lastly, copy the `<repo>\dist\jsonReport.js`  file to target folder `<qavalry setup folder>\node_modules\qavalry\dist\jsonReport.js`
 
 ## Publish
 

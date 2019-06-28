@@ -127,7 +127,7 @@ module.exports.config = {
     cucumberOpts: {
         require: [
             './step_definitions/**/*.js',
-            './node_modules/valtech-testing-framework/dist/jsonReport.js'
+            './node_modules/qavalry/dist/jsonReport.js'
         ], // <string[]> (file/dir) require files before executing features            
         backtrace: false,   // <boolean> show full backtrace for errors
         compiler: [
