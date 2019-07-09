@@ -126,8 +126,8 @@ module.exports.config = {
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
         require: [
-            './features/step_definitions/**/*.js',
-            './node_modules/valtech-testing-framework/dist/jsonReport.js'
+            './step_definitions/**/*.js',
+            './node_modules/qavalry/dist/jsonReport.js'
         ], // <string[]> (file/dir) require files before executing features            
         backtrace: false,   // <boolean> show full backtrace for errors
         compiler: [

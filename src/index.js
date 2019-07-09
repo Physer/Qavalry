@@ -9,9 +9,11 @@ import dateformat from 'dateformat';
 
 const launcher = require('webdriverio/build/lib/launcher');
 const args = require('yargs').argv;
+const fsextra = require('fs-extra');
 var configFile = './wdio.defaults.conf.js';
+var defaultOptionsFile = './configuration/options.js';
 
-function setupEnvironment() {
+function prepareOutputFolders() {
     var outputFolder = path.join(process.cwd(), './_output');
     log.info('Checking existence of output folder ' + outputFolder);
     if (!fs.existsSync(outputFolder)) {
@@ -48,6 +50,17 @@ function setupEnvironment() {
     }
 }
 
+function setup() {
+    log.info('Running setup!');
+    var destination = process.cwd();
+    fsextra.copy(path.join(__dirname, '../boilerplate'), `${destination}`, err => {
+        if(err) {
+            console.log('Something went wrong: ');
+            console.log(err);
+        }
+    });
+}
+
 // Create HTML report
 function createHtmlReport() {
     var input = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
@@ -68,18 +81,20 @@ function createHtmlReport() {
     }
 }
 
-if (process.argv[2] == 'setup') {
-    log.info('Running setup!');
-    setupEnvironment();
+if (process.argv[2] == 'setup') {    
+    setup();
 } else if (process.argv[2] == 'run') {
     // Make sure the environment is set up properly before running any tests
-    setupEnvironment();
+    prepareOutputFolders();
 
     var options = {};
     if (args.options) {
         options = require(path.join(process.cwd(), args.options)).config;
+    } else if (fs.existsSync(defaultOptionsFile)) {
+        log.info('Default options file found at: ' + defaultOptionsFile);
+        options = require(path.join(process.cwd(), defaultOptionsFile)).config;
     } else {
-        log.error('No options file was given!');
+        log.error('No options file was specified and default options file not found at: ' + defaultOptionsFile);
         process.exit(1);
     }
 
@@ -99,6 +114,7 @@ if (process.argv[2] == 'setup') {
 
     // Start test
     wdio.run().then(() => {
+        log.info('Creating html report');
         createHtmlReport();
     }, function (error) {
         log.error('Error while running the tests!');
