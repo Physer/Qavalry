@@ -3,11 +3,10 @@
 import path from 'path';
 import fs from 'fs';
 import log from 'fancy-log';
-import colors from 'ansi-colors';
 import reporter from 'cucumber-html-reporter';
 import dateformat from 'dateformat';
 
-const launcher = require('webdriverio/build/lib/launcher');
+const launcher = require('@wdio/cli').default;
 const args = require('yargs').argv;
 const fsextra = require('fs-extra');
 var configFile = './wdio.defaults.conf.js';
@@ -107,7 +106,7 @@ if (process.argv[2] == 'setup') {
     }
 
     // Run tests 
-    log.info('Running for site: ' + colors.bold(colors.white(colors.bgblue(options.baseUrl))));
+    log.info('Running for site: ' + options.baseUrl);
 
     // Start test run
     var wdio = new launcher(path.join(__dirname, configFile), options);
