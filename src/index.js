@@ -106,15 +106,21 @@ if (process.argv[2] == 'setup') {
     }
 
     // Run tests 
+    log.info('Config');
+    log.info(config);
+
+    log.info('Options');
+    log.info(options);
     log.info('Running for site: ' + options.baseUrl);
 
     // Start test run
     var wdio = new launcher(path.join(__dirname, configFile), options);
 
     // Start test
-    wdio.run().then(() => {
+    wdio.run().then((code) => {
         log.info('Creating html report');
         createHtmlReport();
+        process.exit(code);
     }, function (error) {
         log.error('Error while running the tests!');
         log.error(error);
