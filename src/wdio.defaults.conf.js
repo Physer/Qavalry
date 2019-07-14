@@ -103,6 +103,7 @@ exports.config = {
     // enhance your test setup with almost no effort. Unlike plugins, they don't
     // add new commands. Instead, they hook themselves up into the test process.
     services: ['selenium-standalone'],
+    outputDir: './_output/logs',
     //
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -115,7 +116,12 @@ exports.config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: http://webdriver.io/guide/testrunner/reporters.html
-    reporters: ['spec'],
+    reporters: ['spec', ['json',{
+        outputDir: './_output/reports',
+        outputFileFormat: function() { 
+            return 'report.json';
+        }
+    }]],
     //
     // If you are using Cucumber you need to specify the location of your step
     // definitions.
