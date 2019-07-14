@@ -1,6 +1,9 @@
+const path = require('path');
+
 // config.js
 module.exports.config = {
-	capabilities: [{
+    outputDir: path.join(__dirname, 'logs'),
+    capabilities: [{
         browserName: 'internet explorer'
     }]
 }

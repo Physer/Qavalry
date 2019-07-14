@@ -103,7 +103,6 @@ exports.config = {
     // enhance your test setup with almost no effort. Unlike plugins, they don't
     // add new commands. Instead, they hook themselves up into the test process.
     services: ['selenium-standalone'],
-    outputDir: path.join(__dirname, 'logs'),
     //
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -145,12 +144,7 @@ exports.config = {
         profile: [],
         // <string[]> (file/dir) require files before executing features
         require: [
-            './step_definitions/**/*.js',
-            './node_modules/qavalry/dist/jsonReport.js'
-                  
-            // Or search a (sub)folder for JS files with a wildcard
-            // works since version 1.1 of the wdio-cucumber-framework
-            // './src/**/*.js',
+            './step_definitions/**/*.js'
         ],
         // <string> specify a custom snippet syntax
         snippetSyntax: undefined,
