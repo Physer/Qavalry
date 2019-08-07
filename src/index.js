@@ -106,6 +106,12 @@ if (process.argv[2] == 'setup') {
         config = Object.assign(config, overrideconfig);
     }
 
+    // Register CLI tags
+    if(args.tags) {
+        options.cucumberOpts.tagExpression = args.tags;
+    }
+
+    log.info('Registered tags: ' + options.cucumberOpts.tagExpression);
     // Run tests 
     log.info('Running for site: ' + colors.bold(colors.white(colors.bgblue(options.baseUrl))));
 
