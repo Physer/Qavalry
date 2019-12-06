@@ -11,6 +11,7 @@ const args = require('yargs').argv;
 const fsextra = require('fs-extra');
 var configFile = './wdio.defaults.conf.js';
 var defaultOptionsFile = './configuration/options.js';
+var defaultReporterSettings = './configuration/reporterSettings.js';
 
 function prepareOutputFolders() {
     var outputFolder = path.join(process.cwd(), './_output');
@@ -53,7 +54,7 @@ function setup() {
     log.info('Running setup!');
     var destination = process.cwd();
     fsextra.copy(path.join(__dirname, '../boilerplate'), `${destination}`, err => {
-        if(err) {
+        if (err) {
             console.log('Something went wrong: ');
             console.log(err);
         }
@@ -67,7 +68,7 @@ function createHtmlReport() {
     if (fs.existsSync(input)) {
         var currentDate = dateformat(new Date(), "dd-mm-yyyy_HHMMss");
         var output = path.join(process.cwd(), `./_output/reports/html/${currentDate}_html_report.html`);
-
+        
         var options = {
             theme: 'bootstrap',
             jsonFile: input,
@@ -76,11 +77,20 @@ function createHtmlReport() {
             launchReport: false
         };
 
+        if (args.reportdata) {
+            var customOptions = require(path.join(process.cwd(), args.reportdata)).config;
+            options = Object.assign(options, customOptions);
+        } else if(fs.existsSync(defaultReporterSettings)) {
+            log.info('Default reporter settings found at: ' + defaultReporterSettings);
+            var defaultOptions = require(path.join(process.cwd(), defaultReporterSettings)).config;
+            options = Object.assign(options, defaultOptions);
+        }
+
         reporter.generate(options);
     }
 }
 
-if (process.argv[2] == 'setup') {    
+if (process.argv[2] == 'setup') {
     setup();
 } else if (process.argv[2] == 'run') {
     // Make sure the environment is set up properly before running any tests
@@ -105,6 +115,12 @@ if (process.argv[2] == 'setup') {
         config = Object.assign(config, overrideconfig);
     }
 
+    // Register CLI tags
+    if (args.tags) {
+        options.cucumberOpts.tagExpression = args.tags;
+    }
+
+    log.info('Registered tags: ' + options.cucumberOpts.tagExpression);
     // Run tests 
     log.info('Config');
     log.info(config);
