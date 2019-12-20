@@ -118,7 +118,7 @@ exports.config = {
         // <boolean> show full backtrace for errors
         backtrace: false,
         // <string[]> module used for processing required features
-        requireModule: ['@babel/register'],
+        requireModule: [['@babel/register', { rootMode: 'upward', ignore: ['node_modules'] }]],
         // <boolean< Treat ambiguous definitions as errors
         failAmbiguousDefinitions: true,
         // <boolean> invoke formatters without executing steps
