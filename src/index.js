@@ -2,14 +2,12 @@
 
 import path from 'path';
 import fs from 'fs';
-import reporter from 'multiple-cucumber-html-reporter';
 
 const launcher = require('@wdio/cli').default;
 const args = require('yargs').argv;
 const fsextra = require('fs-extra');
 var configFile = './wdio.conf.js';
 var defaultOptionsFile = './configuration/options.js';
-var defaultReporterSettings = './configuration/reporterSettings.js';
 
 function prepareOutputFolders() {
     var outputFolder = path.join(process.cwd(), './_output');
@@ -66,16 +64,6 @@ function setup() {
     });
 }
 
-function createHtmlReport() {
-    var jsonReportLocation = path.join(process.cwd(), './_output/reports/json');
-    var outputLocation = path.join(process.cwd(), './_output/reports/html');
-
-    reporter.generate({
-        jsonDir: jsonReportLocation,
-        reportPath: outputLocation
-    });
-}
-
 if (process.argv[2] == 'setup') {
     setup();
 } else if (process.argv[2] == 'run') {
@@ -117,13 +105,10 @@ if (process.argv[2] == 'setup') {
     wdio.run()
     .then(
       code => {
-        console.info('Creating HTML Report');
-        createHtmlReport();
-        console.info('WDIO Launcher completed with code', code);
         process.exit(code);
       },
       error => {
-        console.error('WDIO Launcher failed to start the test', error.stacktrace);
+        console.error('Webdriver IO failed to start the test', error.stacktrace);
         process.exit(1);
       },
     );

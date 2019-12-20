@@ -1,3 +1,6 @@
+const { generate } = require('multiple-cucumber-html-reporter');
+const { removeSync } = require('fs-extra');
+
 exports.config = {
     //
     // ====================
@@ -191,6 +194,10 @@ exports.config = {
      */
     // onPrepare: function (config, capabilities) {
     // },
+    onPrepare: () => {
+        // Remove the `.tmp/` folder that holds the json and report files
+        removeSync('./_output/reports/json');
+    },
     /**
      * Gets executed just before initialising the webdriver session and test framework. It allows you
      * to manipulate configurations depending on the capability or spec.
@@ -297,6 +304,17 @@ exports.config = {
      */
     // onComplete: function(exitCode, config, capabilities, results) {
     // },
+    onComplete: () => {
+        // Generate the report when it all tests are done
+        generate({
+          // Required
+          // This part needs to be the same path where you store the JSON files
+          // default = '.tmp/json/'
+          jsonDir: './_output/reports/json',
+          reportPath: './_output/reports/html',
+          // for more options see https://github.com/wswebcreation/multiple-cucumber-html-reporter#options
+        });
+    }
     /**
     * Gets executed when a refresh happens.
     * @param {String} oldSessionId session ID of the old session
