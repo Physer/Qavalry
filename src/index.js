@@ -2,8 +2,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import reporter from 'cucumber-html-reporter';
-import dateformat from 'dateformat';
+import reporter from 'multiple-cucumber-html-reporter';
 
 const launcher = require('@wdio/cli').default;
 const args = require('yargs').argv;
@@ -67,6 +66,16 @@ function setup() {
     });
 }
 
+function createHtmlReport() {
+    var jsonReportLocation = path.join(process.cwd(), './_output/reports/json');
+    var outputLocation = path.join(process.cwd(), './_output/reports/html');
+
+    reporter.generate({
+        jsonDir: jsonReportLocation,
+        reportPath: outputLocation
+    });
+}
+
 if (process.argv[2] == 'setup') {
     setup();
 } else if (process.argv[2] == 'run') {
@@ -108,6 +117,8 @@ if (process.argv[2] == 'setup') {
     wdio.run()
     .then(
       code => {
+        console.info('Creating HTML Report');
+        createHtmlReport();
         console.info('WDIO Launcher completed with code', code);
         process.exit(code);
       },

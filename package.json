@@ -32,6 +32,7 @@
     "chromedriver": "^78.0.1",
     "dateformat": "^3.0.3",
     "file-system": "^2.2.2",
+    "multiple-cucumber-html-reporter": "^1.13.2",
     "wdio-chromedriver-service": "^5.0.2",
     "wdio-cucumberjs-json-reporter": "^1.1.2"
   },
