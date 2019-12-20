@@ -30,10 +30,10 @@
     "@wdio/sync": "^5.16.12",
     "chai": "^4.2.0",
     "chromedriver": "^78.0.1",
-    "cucumber-html-reporter": "^5.0.2",
     "dateformat": "^3.0.3",
     "file-system": "^2.2.2",
-    "wdio-chromedriver-service": "^5.0.2"
+    "wdio-chromedriver-service": "^5.0.2",
+    "wdio-cucumberjs-json-reporter": "^1.1.2"
   },
   "bin": {
     "qavalry": "./cli.js",

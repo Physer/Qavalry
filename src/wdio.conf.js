@@ -164,7 +164,10 @@ exports.config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter.html
-    reporters: ['spec'],
+    reporters: ['spec', [ 'cucumberjs-json', {
+            jsonFolder: './_output/reports/json'
+        }]
+    ],
  
     //
     // Options to be passed to Mocha.

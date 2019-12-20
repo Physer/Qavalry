@@ -34,6 +34,13 @@ function prepareOutputFolders() {
         fs.mkdirSync(reportsFolder);
     }
 
+    var jsonReportsFolder = path.join(process.cwd(), './_output/reports/json');
+    console.log('Checking existence of reports folder ' + jsonReportsFolder);
+    if (!fs.existsSync(jsonReportsFolder)) {
+        console.log('Creating reports directory.');
+        fs.mkdirSync(jsonReportsFolder);
+    }
+
     var htmlReportsFolder = path.join(process.cwd(), './_output/reports/html');
     console.log('Checking existence of html reports folder ' + htmlReportsFolder);
     if (!fs.existsSync(htmlReportsFolder)) {
@@ -58,38 +65,6 @@ function setup() {
             console.log(err);
         }
     });
-}
-
-// Create HTML report
-function createHtmlReport() {
-    var input = path.join(process.cwd(), './_output/reports/_cucumber-report.json');
-
-    if (fs.existsSync(input)) {
-        var currentDate = dateformat(new Date(), "dd-mm-yyyy_HHMMss");
-        var output = path.join(process.cwd(), `./_output/reports/html/${currentDate}_html_report.html`);
-        
-        var options = {
-            theme: 'bootstrap',
-            jsonFile: input,
-            output: output,
-            reportSuiteAsScenarios: false,
-            launchReport: false
-        };
-
-        if (args.reportdata) {
-            var customOptions = require(path.join(process.cwd(), args.reportdata)).config;
-            options = Object.assign(options, customOptions);
-        } else if(fs.existsSync(defaultReporterSettings)) {
-            console.log('Default reporter settings found at: ' + defaultReporterSettings);
-            var defaultOptions = require(path.join(process.cwd(), defaultReporterSettings)).config;
-            options = Object.assign(options, defaultOptions);
-        }
-
-        reporter.generate(options);
-    }
-    else{
-        console.warn('No JSON report found, unable to generate HTML report!');
-    }
 }
 
 if (process.argv[2] == 'setup') {
@@ -133,8 +108,6 @@ if (process.argv[2] == 'setup') {
     wdio.run()
     .then(
       code => {
-        console.info('Creating HTML report');
-        createHtmlReport();
         console.info('WDIO Launcher completed with code', code);
         process.exit(code);
       },
