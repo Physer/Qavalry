@@ -87,6 +87,9 @@ function createHtmlReport() {
 
         reporter.generate(options);
     }
+    else{
+        console.warn('No JSON report found, unable to generate HTML report!');
+    }
 }
 
 if (process.argv[2] == 'setup') {
@@ -130,11 +133,13 @@ if (process.argv[2] == 'setup') {
     wdio.run()
     .then(
       code => {
-        console.info('Launcher completed with code', code);
+        console.info('Creating HTML report');
+        createHtmlReport();
+        console.info('WDIO Launcher completed with code', code);
         process.exit(code);
       },
       error => {
-        console.error('Launcher failed to start the test', error.stacktrace);
+        console.error('WDIO Launcher failed to start the test', error.stacktrace);
         process.exit(1);
       },
     );
